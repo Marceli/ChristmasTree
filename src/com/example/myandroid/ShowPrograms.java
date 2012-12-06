@@ -18,7 +18,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
+
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,26 +30,36 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ToggleButton;
 
 public class ShowPrograms extends Activity {
   
 /** Called when the activity is first created. */
   JSONArray programList;
+  boolean isStandardList=true;
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_parse_json);
     RefreshMockPrograms();  
-    bindList(getItems());         
+        
   }
-  private void RefreshMockPrograms() {  
-	String result="[ {ID:\"38f0d4be-abd7-4bf9-8844-60b4945263c4\", Author:\"Name Lastname\",  Name: \"Name\"} ,";
-	result+=" {ID:\"38f0d4be-abd7-4bf9-8844-60b4945263c3\", Author:\"Marcel P\",  Name: \"Kotek\"} ]";
+  private void RefreshMockPrograms() {
+	String result;
+	if(this.isStandardList){
+		result="[ {ID:\"38f0d4be-abd7-4bf9-8844-60b4945263c4\", Author:\"StandardPrograms\",  Name: \"Name\"} ,";
+		result+=" {ID:\"38f0d4be-abd7-4bf9-8844-60b4945263c3\", Author:\"Marcel P\",  Name: \"Kotek\"} ]";
+	}else{
+		result="[ {ID:\"38f0d4be-abd7-4bf9-8844-60b4945263c4\", Author:\"Custom Programs\",  Name: \"Name\"} ,";
+		result+=" {ID:\"38f0d4be-abd7-4bf9-8844-60b4945263c3\", Author:\"Marcel P\",  Name: \"Kotek\"} ]";
+	}
+     
 	try {
 		programList=new JSONArray(result);
 	} catch (JSONException e) {
 		e.printStackTrace();
 	}
+	bindList(getItems());
  }
 
  public void RefreshPrograms() {
@@ -81,6 +94,21 @@ public class ShowPrograms extends Activity {
 	}
 
   }
+ 
+ public void onStandardBtnClick(View view) {
+	 this.isStandardList=!isStandardList;
+	 String btnCaption;
+	 if(isStandardList)
+	 {
+		 btnCaption="Standard programs";
+	 }else
+	 {
+		 btnCaption="Custom programs";
+	 }
+ 	((ToggleButton)view).setText(btnCaption);
+ 	RefreshMockPrograms();
+ 	
+ }
 
 private String[] getItems() {
 	Log.i(ShowPrograms.class.getName(),
@@ -100,7 +128,7 @@ private String[] getItems() {
       }
 	return values;
 }
-"onStandardBtnClick"
+
 
 private void bindList(String[] values) {
 	ListView listView=(ListView)findViewById(R.id.mylist);
@@ -120,7 +148,12 @@ private void bindList(String[] values) {
     	HttpClient httpClient = new DefaultHttpClient();
     	HttpContext localContext = new BasicHttpContext();
     	String serverIp=getResources().getString(R.string.server_ip);
-		HttpPut httpPut = new HttpPut(String.format("http://%s/stdprogram/%d", serverIp,id));
+    	if(isStandardList)
+    	{
+    		HttpPut httpPut = new HttpPut(String.format("http://%s/stdprogram/%d", serverIp,id));
+    	}else{
+    		HttpPut httpPut = new HttpPut(String.format("http://%s/program/%d", serverIp,id));    		
+    	}
 		
 		//try {
 			//HttpResponse response = httpClient.execute(httpPut, localContext);

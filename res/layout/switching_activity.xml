@@ -3,7 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/christmastree"
+    
     android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/button1"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        android:onClick="onReset" />
     
 <EditText
     android:id="@+id/edit_message"
@@ -13,6 +22,7 @@
     android:text="http://www.thomas-bayer.com/sqlrest/PRODUCT/" />
  
  <ListView
+        android:choiceMode="multipleChoice"
         android:id="@+id/levelList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
